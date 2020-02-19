@@ -19,6 +19,22 @@ func drawNewspaper(db *sql.DB) {
 
 }
 
+func mainLoop(db *sql.DB) {
+	drawNewspaper(db)
+loop:
+	for {
+		switch ev := termbox.PollEvent(); ev.Type {
+		case termbox.EventKey:
+			if ev.Key == termbox.KeyCtrlS {
+				termbox.Sync()
+			}
+			if ev.Key == termbox.KeyCtrlQ {
+				break loop
+			}
+		}
+	}
+}
+
 func main() {
 	db := data.InitDB("storage.db")
 
@@ -27,23 +43,6 @@ func main() {
 		panic(err)
 	}
 	defer termbox.Close()
-	ctrlxpressed := false
-	drawNewspaper(db)
-loop:
-	for {
-		switch ev := termbox.PollEvent(); ev.Type {
-		case termbox.EventKey:
-			if ev.Key == termbox.KeyCtrlS && ctrlxpressed {
-				termbox.Sync()
-			}
-			if ev.Key == termbox.KeyCtrlQ && ctrlxpressed {
-				break loop
-			}
-			if ev.Key == termbox.KeyCtrlX {
-				ctrlxpressed = true
-			} else {
-				ctrlxpressed = false
-			}
-		}
-	}
+
+	mainLoop(db)
 }
