@@ -12,7 +12,7 @@ type Screen struct {
 	height  int
 	cleared bool
 	layout  *Layout
-	markup  *Markup
+	// markup  *Markup
 }
 
 func NewScreen() *Screen {

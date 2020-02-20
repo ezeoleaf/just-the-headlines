@@ -11,11 +11,11 @@ type Newspaper struct {
 	Country string `json:"id"`
 }
 
-type NewspaperCollection struct {
+type Newspapers struct {
 	Newspapers []Newspaper `json:"items"`
 }
 
-func GetNewspapers(db *sql.DB) NewspaperCollection {
+func GetNewspapers(db *sql.DB) Newspapers {
 	sql := "SELECT * FROM newspaper"
 	rows, err := db.Query(sql)
 
@@ -25,7 +25,7 @@ func GetNewspapers(db *sql.DB) NewspaperCollection {
 
 	defer rows.Close()
 
-	result := NewspaperCollection{}
+	result := Newspapers{}
 	for rows.Next() {
 		n := Newspaper{}
 		e := rows.Scan(&n.ID, &n.Name, &n.Country)
