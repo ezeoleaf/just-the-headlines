@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ezeoleaf/just-the-headlines/models"
 	"github.com/nsf/termbox-go"
 )
 
@@ -60,14 +61,14 @@ func (s *Screen) Draw(objects ...interface{}) *Screen {
 
 	for _, ptr := range objects {
 		switch ptr.(type) {
-		case *Newspapers:
-			object := ptr.(*Newspapers)
+		case *models.Newspapers:
+			object := ptr.(*models.Newspapers)
 			s.draw(s.layout.Newspapers(object.Fetch()))
-		case *Sections:
-			object := ptr.(*Sections)
+		case *models.Sections:
+			object := ptr.(*models.Sections)
 			s.draw(s.layout.Sections(object.Fetch()))
-		case *News:
-			object := ptr.(*News)
+		case *models.News:
+			object := ptr.(*models.News)
 			s.draw(s.layout.News(object.Fetch()))
 		default:
 			s.draw(ptr.(string))

@@ -44,3 +44,15 @@ func (l *Layout) Newspapers(newspapers *models.Newspapers) string {
 func (l *Layout) TotalColumns() int {
 	return len(l.columns)
 }
+
+func buildNewspaperTemplate() *template.Template {
+	markup := `<right><white>{{.Now}}</></right>
+
+
+
+{{.Header}}
+{{range.Nespaper}}{{.ID}}{{.Name}}{{.Country}}</>
+{{end}}`
+
+	return template.Must(template.New(`newspapers`).Parse(markup))
+}
