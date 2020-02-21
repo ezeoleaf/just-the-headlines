@@ -51,7 +51,7 @@ func buildNewspaperTemplate() *template.Template {
 
 
 {{.Header}}
-{{range.Nespaper}}{{.ID}}{{.Name}}{{.Country}}</>
+{{range.Newspapers}}{{.ID}}{{.Name}}{{.Country}}</>
 {{end}}`
 
 	return template.Must(template.New(`newspapers`).Parse(markup))

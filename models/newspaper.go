@@ -15,7 +15,14 @@ type Newspapers struct {
 	Newspapers []Newspaper `json:"items"`
 }
 
-func GetNewspapers(db *sql.DB) Newspapers {
+func NewNewspapers() *Newspapers {
+	n := &Newspapers{}
+
+	return n
+}
+
+func (n *Newspapers) Fetch(db *sql.DB) (self *Newspapers) {
+	self = n
 	sql := "SELECT * FROM newspaper"
 	rows, err := db.Query(sql)
 
@@ -25,7 +32,7 @@ func GetNewspapers(db *sql.DB) Newspapers {
 
 	defer rows.Close()
 
-	result := Newspapers{}
+	result := &Newspapers{}
 	for rows.Next() {
 		n := Newspaper{}
 		e := rows.Scan(&n.ID, &n.Name, &n.Country)

@@ -1,26 +1,26 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-
 	"github.com/ezeoleaf/just-the-headlines/data"
+	"github.com/ezeoleaf/just-the-headlines/jth"
 	"github.com/ezeoleaf/just-the-headlines/models"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/nsf/termbox-go"
 )
 
-func drawNewspaper(db *sql.DB) {
-	nC := models.GetNewspapers(db)
-	fmt.Println(nC.Newspapers)
-	for _, n := range nC.Newspapers {
-		fmt.Println(n.ID)
-	}
+// func drawNewspaper(db *sql.DB) {
+// 	nC := models.GetNewspapers(db)
+// 	fmt.Println(nC.Newspapers)
+// 	for _, n := range nC.Newspapers {
+// 		fmt.Println(n.ID)
+// 	}
 
-}
+// }
 
-func mainLoop(db *sql.DB) {
-	drawNewspaper(db)
+func mainLoop(s *jth.Screen) {
+	newspapers := models.NewNewspapers()
+
+	s.Draw(newspapers)
 loop:
 	for {
 		switch ev := termbox.PollEvent(); ev.Type {
@@ -37,12 +37,8 @@ loop:
 
 func main() {
 	db := data.InitDB("storage.db")
+	s := jth.NewScreen(db)
+	defer s.Close()
 
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer termbox.Close()
-
-	mainLoop(db)
+	mainLoop(s)
 }

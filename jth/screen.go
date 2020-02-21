@@ -1,8 +1,9 @@
 package jth
 
 import (
+	"database/sql"
+	"fmt"
 	"strings"
-	"time"
 
 	"github.com/ezeoleaf/just-the-headlines/models"
 	"github.com/nsf/termbox-go"
@@ -13,16 +14,18 @@ type Screen struct {
 	height  int
 	cleared bool
 	layout  *Layout
-	// markup  *Markup
+	markup  *Markup
+	db      *sql.DB
 }
 
-func NewScreen() *Screen {
+func NewScreen(db *sql.DB) *Screen {
 	if err := termbox.Init(); err != nil {
 		panic(err)
 	}
 
 	s := &Screen{}
 	s.layout = NewLayout()
+	s.db = db
 
 	return s.Resize()
 }
@@ -57,19 +60,21 @@ func (s *Screen) ClearLine(x int, y int) *Screen {
 }
 
 func (s *Screen) Draw(objects ...interface{}) *Screen {
-	zn, _ := time.Now().In(time.Local).Zone()
+	// zn, _ := time.Now().In(time.Local).Zone()
 
 	for _, ptr := range objects {
 		switch ptr.(type) {
 		case *models.Newspapers:
 			object := ptr.(*models.Newspapers)
-			s.draw(s.layout.Newspapers(object.Fetch()))
-		case *models.Sections:
-			object := ptr.(*models.Sections)
-			s.draw(s.layout.Sections(object.Fetch()))
-		case *models.News:
-			object := ptr.(*models.News)
-			s.draw(s.layout.News(object.Fetch()))
+			d := s.layout.Newspapers(object.Fetch(s.db))
+			// fmt.Println(d)
+			s.draw(d)
+		// case *models.Sections:
+		// 	object := ptr.(*models.Sections)
+		// 	s.draw(s.layout.Sections(object.Fetch()))
+		// case *models.News:
+		// 	object := ptr.(*models.News)
+		// 	s.draw(s.layout.News(object.Fetch()))
 		default:
 			s.draw(ptr.(string))
 		}
@@ -101,11 +106,14 @@ func (s *Screen) DrawLine(x int, y int, str string) {
 }
 
 func (s *Screen) draw(str string) {
+	fmt.Println(str)
 	if !s.cleared {
 		s.Clear()
 	}
 
 	for r, l := range strings.Split(str, "\n") {
-		s.DrawLine(0, r, l)
+		fmt.Println(r)
+		fmt.Println(l)
+		// s.DrawLine(0, r, l)
 	}
 }
